@@ -2,8 +2,9 @@
 import { expect, test } from "vitest";
 import App from "../src/App";
 import { render } from "@testing-library/react";
-import {screen} from '@testing-library/dom'
+import { screen, waitFor } from '@testing-library/dom'
 import userEvent from "@testing-library/user-event";
+import { UserAuthContextProvider } from "../src/contexts/UserAuthContextProvider";
 
 // - render content and check if the rendered content is as expected
 
@@ -27,7 +28,7 @@ test("Render the App component with a button that increases the count", async ()
     expect(counterButton).toHaveTextContent("count is 0");
 
     // Click on the button
-   
+
     // Create a user 
     const user = userEvent.setup();
 
@@ -36,4 +37,31 @@ test("Render the App component with a button that increases the count", async ()
 
     // Check the button's text for "count is 1"
     expect(counterButton).toHaveTextContent("count is 1");
+});
+
+test("Render the App component with token on display", async () => {
+
+    render(
+        <UserAuthContextProvider>
+            <App />
+        </UserAuthContextProvider>
+    );
+
+    // Fetch the heading where JWT is to be displayed
+    let tokenHeading = screen.getByTestId('jwt-header');
+    expect(tokenHeading).toHaveTextContent("");
+
+    // Find the login button
+    let loginButton = screen.getByTestId('login-button');
+
+    // Setup a user
+    const user = userEvent.setup();
+
+    // User clicks on the login button
+    await user.click(loginButton);
+
+    // Check the token heading for the JWT
+    await waitFor(() => {
+        expect(tokenHeading).not.toHaveTextContent("");
+    });
 });

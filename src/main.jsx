@@ -6,6 +6,7 @@ import { UserAuthContextProvider } from './contexts/UserAuthContextProvider.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
+    {/* The Provider stores our token */}
     <UserAuthContextProvider>
       <App />
     </UserAuthContextProvider>
